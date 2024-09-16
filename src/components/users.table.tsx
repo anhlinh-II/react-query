@@ -7,6 +7,7 @@ import UserDeleteModal from './modal/user.delete.modal';
 import UsersPagination from './pagination/users.pagination';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
+import { useQuery } from '@tanstack/react-query';
 
 function UsersTable() {
 
@@ -17,23 +18,23 @@ function UsersTable() {
 
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
 
-    const users = [
-        {
-            "id": 1,
-            "name": "Eric",
-            "email": "eric@gmail.com"
-        },
-        {
-            "id": 2,
-            "name": "Hỏi Dân IT",
-            "email": "hoidanit@gmail.com"
-        },
-        {
-            "id": 3,
-            "name": "Hỏi Dân IT",
-            "email": "admin@gmail.com"
-        }
-    ]
+    // const users = [
+    //     {
+    //         "id": 1,
+    //         "name": "Eric",
+    //         "email": "eric@gmail.com"
+    //     },
+    //     {
+    //         "id": 2,
+    //         "name": "Hỏi Dân IT",
+    //         "email": "hoidanit@gmail.com"
+    //     },
+    //     {
+    //         "id": 3,
+    //         "name": "Hỏi Dân IT",
+    //         "email": "admin@gmail.com"
+    //     }
+    // ]
 
     const handleEditUser = (user: any) => {
         setDataUser(user);
@@ -60,6 +61,17 @@ function UsersTable() {
             </Popover>
         )
     })
+    const { isPending, error, data : user } = useQuery({
+        queryKey: ['repoData'],
+        queryFn: () =>
+            fetch('http://localhost:8000/users').then((res) =>
+                res.json(),
+            ),
+    })
+
+    if (isPending) return 'Loading...'
+
+    if (error) return 'An error has occurred: ' + error.message
 
 
     return (
@@ -80,6 +92,7 @@ function UsersTable() {
                     </tr>
                 </thead>
                 <tbody>
+                    {/* @ts-ignore */}
                     {users?.map(user => {
                         return (
                             <tr key={user.id}>
