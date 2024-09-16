@@ -1,12 +1,12 @@
 import Pagination from 'react-bootstrap/Pagination';
-import { useState } from 'react';
 
 interface IProps {
     totalPages: number;
+    currentPage: number;
+    setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 const UsersPagination = (props: IProps) => {
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const { totalPages } = props;
+    const { totalPages, currentPage, setCurrentPage } = props;
 
     return (
         <div style={{ display: "flex", justifyContent: "center" }}>
