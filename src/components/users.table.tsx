@@ -55,21 +55,47 @@ function UsersTable() {
     const PopoverComponent = forwardRef((props: any, ref: any) => {
         const { id } = props;
 
+        const { isPending, error, data } = useQuery({
+            queryKey: ['fetchUser', id],
+            queryFn: (): Promise<IUser> =>
+                fetch(`http://localhost:8000/users/${id}`).then((res) =>
+                    res.json(),
+                ),
+        })
+
+        console.log(isPending, error, data);
+
+
+
+
+        const getBody = () => {
+            if (isPending) return 'Loading detail...'
+            if (error) return 'An error has occurred: ' + error.message
+            if (data) {
+                return (
+                    <>
+                        <div>ID = {id}</div>
+                        <div>Name = {data?.name}</div>
+                        <div>Email = {data?.email}</div>
+                    </>
+                )
+            }
+        }
+
         return (
 
             <Popover ref={ref} {...props}>
                 <Popover.Header as="h3">Detail User</Popover.Header>
                 <Popover.Body>
-                    <div>ID = {id}</div>
-                    <div>Name = ?</div>
-                    <div>Email = ?</div>
+                    {getBody()}
                 </Popover.Body>
             </Popover>
         )
     })
+
     const { isPending, error, data } = useQuery({
         queryKey: ['fetchUser'],
-        queryFn: () : Promise<IUser[]> =>
+        queryFn: (): Promise<IUser[]> =>
             fetch('http://localhost:8000/users').then((res) =>
                 res.json(),
             ),
